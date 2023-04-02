@@ -1,0 +1,9 @@
+Vous devez écrire des scripts serveur/client TCP de réseau Python. Dès réception d'une
+connexion, il doit renvoyer au client son adresse IP (client IP). Ensuite, il doit attendre les
+commandes du client. Les commandes valides sont "TIME", "IP", "OS" et "EXIT". A la commande
+TIME, le serveur doit renvoyer l'heure actuelle. À la commande IP, il renvoie l'adresse IP du client.
+A la commande "OS", le serveur renvoie des informations sur le système d'exploitation. A la
+commande "Fichier", le serveur envoie un fichier factice au client. Si le client ferme la connexion
+ou ne répond pas avec une commande dans un délai raisonnable (20 secondes), le serveur doit
+fermer la connexion en cours et attendre une autre connexion (voir Définir un timeout sur un
+socket). À la commande EXIT, votre serveur doit fermer tous les sockets ouverts et quitter.
