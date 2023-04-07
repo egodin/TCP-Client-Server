@@ -68,9 +68,8 @@ class Server:
             conn, addr = self.socket.accept()
             print(f"Connection from {addr}")
 
-            server_ip = socket.gethostbyname(socket.gethostname())
-            welcome_message = "Welcome to the server! Valid commands are TIME, IP, OS, FICHIER, EXIT."
-            welcome_string = server_ip + '\n' + welcome_message
+            # call init() method to send welcome message to client
+            welcome_string = self.init()
             conn.sendall(welcome_string.encode())
 
             while True:
@@ -105,3 +104,13 @@ class Server:
                         conn.send(response.encode())
 
             conn.close()
+
+    def init(self) -> str:
+        """
+        Prepare a welcome message package for the client
+        :return: string containing the server IP and the welcome message
+        """
+        server_ip = socket.gethostbyname(socket.gethostname())
+        welcome_message = "Welcome to the server! Valid commands are TIME, IP, OS, FICHIER, EXIT."
+        welcome_string = server_ip + '\n' + welcome_message
+        return welcome_string
