@@ -28,6 +28,10 @@ while True:
     # Send the command to the server and print the response
     response = client.send_command(command)
     print(response)
+    if "DISCONNECTED" in response:
+        # Disconnect from the server and exit the program
+        client.disconnect()
+        sys.exit(0)
 
 
 
