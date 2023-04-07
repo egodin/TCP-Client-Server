@@ -61,7 +61,7 @@ class Server:
         self.socket.bind((server_address, server_port))
 
     def start(self) -> None:
-        self.socket.listen(1)
+        self.socket.listen(5)
         print(f"Server listening on {self.server_address}:{self.server_port}")
         while True:
             conn, addr = self.socket.accept()
