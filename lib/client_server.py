@@ -27,6 +27,14 @@ class Client:
         """
         self.socket.connect((self.server_address, self.server_port))
 
+        # Get the server's IP address
+        server_ip = self.socket.recv(1024).decode()
+        print(f"The server's IP address is: {server_ip}")
+
+        # Get the welcome message from the server
+        welcome_message = self.socket.recv(1024).decode()
+        print(welcome_message)
+
     def send_command(self, command) -> str:
         """
         This method sends a command to the server and returns the response
@@ -58,6 +66,10 @@ class Server:
         while True:
             conn, addr = self.socket.accept()
             print(f"Connection from {addr}")
+            server_ip = socket.gethostbyname(socket.gethostname())
+            conn.sendall(server_ip.encode())
+            welcome_message = "Welcome to the CR430-GODIN-server. Valid commands are TIME, IP, OS, FICHIER, EXIT"
+            conn.sendall(welcome_message.encode())
             while True:
                 data = conn.recv(1024).decode()
                 if not data:
