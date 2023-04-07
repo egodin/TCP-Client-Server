@@ -27,12 +27,13 @@ class Client:
         """
         self.socket.connect((self.server_address, self.server_port))
 
-        # Get the server's IP address
-        server_ip = self.socket.recv(1024).decode()
-        print(f"The server's IP address is: {server_ip}")
+    def init(self):
+        data_received = ''
+        while '\n' not in data_received:  # Keep receiving until newline separator is received
+            data_received += self.socket.recv(1024).decode()
 
-        # Get the welcome message from the server
-        welcome_message = self.socket.recv(1024).decode()
+        server_ip, welcome_message = data_received.split('\n')  # Split received data into IP and welcome message
+        print("Server IP:", server_ip)
         print(welcome_message)
 
     def send_command(self, command) -> str:
@@ -66,10 +67,12 @@ class Server:
         while True:
             conn, addr = self.socket.accept()
             print(f"Connection from {addr}")
+
             server_ip = socket.gethostbyname(socket.gethostname())
-            conn.sendall(server_ip.encode())
-            welcome_message = "Welcome to the CR430-GODIN-server. Valid commands are TIME, IP, OS, FICHIER, EXIT"
-            conn.sendall(welcome_message.encode())
+            welcome_message = "Welcome to the server! Valid commands are TIME, IP, OS, FICHIER, EXIT."
+            welcome_string = server_ip + '\n' + welcome_message
+            conn.sendall(welcome_string.encode())
+
             while True:
                 data = conn.recv(1024).decode()
                 if not data:

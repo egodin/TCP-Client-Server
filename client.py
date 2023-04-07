@@ -10,6 +10,7 @@ args = cmd_parser.parse()
 # Create a client object and connect to the server using the command line arguments
 client = Client(args.server, args.port)
 client.connect()
+client.init()
 
 # main control loop
 while True:
