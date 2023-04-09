@@ -159,7 +159,7 @@ class Server:
         :return: string containing the server IP and the welcome message
         """
         # get the server IP address
-        server_ip = socket.gethostbyname(socket.gethostname())
+        server_ip = self.server_address
         welcome_message = "Welcome to the ETIENNE.GODIN@CR430 server! Valid commands are TIME, IP, OS, FICHIER, EXIT."
 
         # Concatenate the server IP and the welcome message, return the result
