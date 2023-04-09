@@ -28,6 +28,8 @@ while True:
     # Send the command to the server and print the response
     response = client.send_command(command)
     print(response)
+    # Check if the server has disconnected over timeout: in this case, it will send a "DISCONNECTED" message to the
+    # client, triggering the exit on next iteration
     if "DISCONNECTED" in response:
         # Disconnect from the server and exit the program
         client.disconnect()

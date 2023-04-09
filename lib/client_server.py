@@ -1,4 +1,3 @@
-import select
 import socket
 import sys
 import time
@@ -43,12 +42,13 @@ class Client:
         # Split the received data into the server IP and the welcome message based on the newline separator
         server_ip, welcome_message = data_received.split('\n')
 
+        # Print the server IP and the welcome message
         print("Server IP:", server_ip)
         print(welcome_message)
 
     def send_command(self, command) -> str:
         """
-        This method sends a command to the server and returns the response
+        This method sends a command to the server and returns the received response
         :param command: a string command to send to the server
         :return: the string response from the server
         """
@@ -70,6 +70,13 @@ class Server:
     """
 
     def __init__(self, server_address, server_port) -> None:
+        """
+        Initialize the server using provided parameters to feed the methods with the instance socket. Arguments are
+        strings provided by the parser
+        :param server_address: server IP address
+        :param server_port: server port number
+        :return: None
+        """
         self.server_address = server_address
         self.server_port = server_port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -91,7 +98,7 @@ class Server:
             conn, addr = self.socket.accept()
             print(f"Connection from {addr}")
 
-            # call init() method to send welcome message to the client on connection
+            # call init() method to send welcome message to the client on initial connection
             welcome_string = self.init()
             conn.sendall(welcome_string.encode())
 
@@ -99,21 +106,25 @@ class Server:
             while True:
                 try:
                     # Set a timeout for receiving data from the client
-                    conn.settimeout(10)  # 10 seconds timeout
+                    conn.settimeout(20)  # 20 seconds timeout
                     data = conn.recv(1024).decode()
+
+                    # If no data is received, break the loop
                     if not data:
                         break
+
                     # Process the received data and send response
                     match data:
                         case 'TIME':
+                            # Get the current time on server and send it to the client
                             response = time.ctime(time.time()) + "\r\n"
                             conn.send(response.encode())
                         case 'IP':
-                            # Get the IP address of the client
+                            # Get the IP address of the client and send it
                             response = addr[0] + "\r\n"
                             conn.send(response.encode())
                         case 'OS':
-                            # Get the OS of the server
+                            # Get the OS of the server, send it to the client
                             response = "OS: " + sys.platform + "\r\n"
                             conn.send(response.encode())
                         case 'FICHIER':
@@ -121,7 +132,7 @@ class Server:
                             filename = 'file.txt'
                             file = open(filename, 'rb')
                             line = file.read(1024)
-                            # Keep sending data to the client
+                            # Keep sending data to the client until the file is fully sent
                             while line:
                                 conn.send(line)
                                 line = file.read(1024)
@@ -133,11 +144,13 @@ class Server:
 
                 except socket.timeout:
                     # Handle timeout: close the connection and reset for a new incoming connection
+                    # DISCONNECTED is expected by the client and will close on the client side as well
                     print("Timeout occurred")
-                    conn.send("DISCONNECTED. Closing connection.".encode())
+                    conn.send("DISCONNECTED. Closing the connection.".encode())
                     conn.close()
                     break
 
+            # Close the connection
             conn.close()
 
     def init(self) -> str:
@@ -149,7 +162,6 @@ class Server:
         server_ip = socket.gethostbyname(socket.gethostname())
         welcome_message = "Welcome to the ETIENNE.GODIN@CR430 server! Valid commands are TIME, IP, OS, FICHIER, EXIT."
 
-        # Concatenate the server IP and the welcome message
+        # Concatenate the server IP and the welcome message, return the result
         welcome_string = server_ip + '\n' + welcome_message
-
         return welcome_string
