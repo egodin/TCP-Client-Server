@@ -32,7 +32,8 @@ class ServerParser:
         """
         self.parser = argparse.ArgumentParser(description='Simple server for a socket-based server')
         self.parser.add_argument('-s', '--server', type=str, required=True, help='server IP, usually localhost'
-                                                                                 'or  0.0.0.0; This needed to be '
+                                                                                 'or  0.0.0.0 work; Your IP works '
+                                                                                 'better. This needed to be '
                                                                                  'executed as root')
         self.parser.add_argument('-p', '--port', type=int, required=True, help='server port')
 
